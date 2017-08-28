@@ -1,0 +1,28 @@
+<a href='/groups'>Go Back</a>
+<a href='/logout'data-method='delete'>logout</a>
+<h1><%= @org.name %></h1>
+<p><%= @org.description %></p>
+
+<% unless @org.fam_followers.include? current_user %>
+<form action="/groups/members/<%= @org.id %>/add" method="post">
+            <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>"/>
+            <input type="submit" value="Join Group">
+        </form>
+<% else %>
+<form action="/groups/members/<%= @org.id %>/remove" method="post">
+            <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>"/>
+            <input type='hidden' name='_method' value="delete"/>
+            <input type="submit" value="Leave Group">
+        </form>
+<% end %>
+
+<h2>Created By: <%= @org.user.first_name.titleize %> <%= @org.user.last_name.titleize %></h2>
+
+<p>Members:</p>
+<% unless @org.followers.empty? %>
+  <% @org.followers.each do |member| %>
+    <p><%= member.user.first_name.titleize %> <%= member.user.last_name.titleize %></p>
+    <% end %>
+<% else %>
+  <p> Haha, no one in your group</p>
+<% end %>
